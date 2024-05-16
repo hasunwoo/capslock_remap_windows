@@ -16,6 +16,6 @@ codegen-units = 1
 anyhow = "1.0.83"
 futures = "0.3.30"
 serde = { version = "1.0.201", features = ["derive"] }
-sysinfo = "0.30.7"
+sysinfo = { version = "0.30.7", default-features = false }
 tokio = { version = "1.37.0", features = ["rt", "sync", "macros"] }
 wmi = "0.13.3"
