@@ -27,7 +27,7 @@ async fn main() -> anyhow::Result<()> {
             .unwrap();
     });
     //start watching for target process
-    process_moniter_task(CHECK_PROCESS_NAMES, toggle_tx).await
+    process_monitor_task(CHECK_PROCESS_NAMES, toggle_tx).await
 }
 
 async fn toggle_process_task(
@@ -56,7 +56,7 @@ async fn toggle_process_task(
     Ok(())
 }
 
-async fn process_moniter_task(
+async fn process_monitor_task(
     process_list: &[&str],
     toggle: watch::Sender<bool>,
 ) -> anyhow::Result<()> {
