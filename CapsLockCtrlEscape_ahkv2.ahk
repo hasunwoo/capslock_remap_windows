@@ -4,7 +4,7 @@
 g_LastCtrlKeyDownTime := 0
 g_AbortSendEsc := false
 g_ControlRepeatDetected := false
-
+g_CapsLockToggled := false
 
 /*
   IME check for windows 11(newer IME)
@@ -31,10 +31,20 @@ ImmGetDefaultIMEWnd(hWnd) {
 
 *CapsLock::
 {
-    global g_LastCtrlKeyDownTime, g_AbortSendEsc, g_ControlRepeatDetected
+    global g_LastCtrlKeyDownTime, g_AbortSendEsc, g_ControlRepeatDetected, g_CapsLockToggled
 
     if (g_ControlRepeatDetected)
     {
+        current_time := A_TickCount
+        time_elapsed := current_time - g_LastCtrlKeyDownTime
+        ; If caps lock key is press alone longer than 1000ms
+        if (!g_AbortSendEsc && !g_CapsLockToggled && time_elapsed > 1000) {
+            ;toggle caps lock
+            current_state := GetKeyState("CapsLock", "T")
+            SetCapsLockState(!current_state)
+            g_CapsLockToggled := true
+            return
+        }
         return
     }
 
@@ -48,10 +58,11 @@ ImmGetDefaultIMEWnd(hWnd) {
 
 *CapsLock Up::
 {
-    global g_LastCtrlKeyDownTime, g_AbortSendEsc, g_ControlRepeatDetected
+    global g_LastCtrlKeyDownTime, g_AbortSendEsc, g_ControlRepeatDetected, g_CapsLockToggled
 
     send("{Ctrl up}")
     g_ControlRepeatDetected := false
+    g_CapsLockToggled := false
 
     if (g_AbortSendEsc)
     {
@@ -66,12 +77,6 @@ ImmGetDefaultIMEWnd(hWnd) {
         if IME_CHECK("A")
             Send("{VK15}")  ; 영문이라면 한영전환 키를 입력해준다.
         }
-}
-
-*Esc::
-{
-    current_state := GetKeyState("CapsLock", "T")
-    SetCapsLockState(!current_state)
 }
 
 ~*^a::
